@@ -1,0 +1,53 @@
+//router inserting payment details taken through UPI
+router.post('/payment_upi',function (req,res,next) {
+  
+  //total amount of ride
+  var amnt1 = parseFloat(req.body.rs,10);
+
+  //adding 18% tax in amount of ride
+  var amnt=amnt1+((amnt1/100)*18);
+
+  //from total amount of ride this variable decided the payment of driver for that ride
+  var d_amnt= amnt1- ((amnt1/100)*15)
+
+  //info to send in DB
+  var info ={
+    upi_name:req.body.name,
+    upi_id:req.body.upi,
+    total_amount:amnt1,
+    tax_amount:amnt,
+    driver_amnt:d_amnt
+  }
+
+  knex('payment_via_upi').insert(info).then(() =>{
+    res.send("DONE")
+  })
+})
+
+
+//router inserting payment details taken through DEBIT CARD
+router.post('/payment_debit',function (req,res,next) {
+  //total amount of ride
+  var amnt1 = parseFloat(req.body.rs,10);
+
+  //adding 18% tax in amount of ride
+  var amnt=amnt1+((amnt1/100)*18);
+
+  //from total amount of ride this variable decided the payment of driver for that ride
+  var d_amnt= amnt1- ((amnt1/100)*15)
+
+  //info to send in DB  
+  var info ={
+    debit_name:req.body.card_name,
+    card_no:req.body.debit_number,
+    card_exp_date:req.body.exp_date,
+    cvv:req.body.cvv,
+    total_amount:amnt1,
+    tax_amount:amnt,
+    driver_amnt:d_amnt
+  }
+
+  knex('payment').insert(info).then(() =>{
+    res.send("DONE")
+  })
+})
